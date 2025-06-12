@@ -154,3 +154,8 @@
   padding: 8px;
   border-radius: 50px;
 }
+
+.added-visible {
+  opacity: 1;
+  transition: opacity 0.3s;
+}

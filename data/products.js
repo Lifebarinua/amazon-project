@@ -656,5 +656,36 @@ const products = [
       "apparel",
       "mens"
     ]
-  }
-];
+  },
+  {
+    id: "id123",
+    image: "images/products/backpack.jpg",
+    name: "Black Leather Backpack",
+    rating: {
+      stars: 5,
+      count: 2157
+    },
+    priceCents: 2500,
+    keywords: [
+      "travelling bags",
+      "school bags",
+      "designer bags",
+      "leather bags"
+    ]
+  },
+  {
+    id: "id1234",
+    image: "images/products/umbrella.jpg",
+    name: "Quality Umbrella",
+    rating: {
+      stars: 4.5,
+      count: 1152
+    },
+    priceCents: 1000,
+    keywords: [
+      "rain coats",
+      "umbrellas",
+      "fashion umbrella",
+      "female umbrella"
+    ]
+  }];

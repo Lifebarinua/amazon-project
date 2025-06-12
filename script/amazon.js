@@ -1,7 +1,7 @@
 let productsHTML = '';
 
-  products.forEach((product)=>{
-    productsHTML += `<div class="product-container">
+products.forEach((product) => {
+  productsHTML += `<div class="product-container">
           <div class="product-image-container">
             <img class="product-image"
               src="${product.image}">
@@ -40,7 +40,7 @@ let productsHTML = '';
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-added-to-cart">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -50,43 +50,69 @@ let productsHTML = '';
             Add to Cart
           </button>
         </div>`;
-  });
-  
-  document.querySelector('.js-products-grid').innerHTML = productsHTML;
+});
 
-  document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
-    button.addEventListener('click', ()=>{
+document.querySelector('.js-products-grid').innerHTML = productsHTML;
+
+
+// Add a map to store timeout references for each product
+const addedMessageTimeouts = new Map();
+
+
+
+
+document.querySelectorAll('.js-add-to-cart').forEach((button) => {
+  button.addEventListener('click', () => {
     const productId = button.dataset.productId;
 
- //Get the selected quantity from the dropdown
-  const productContainer = button.closest('.product-container');
-    
-  const selectedQuantity = Number(productContainer.querySelector('select').value);
+    //Get the selected quantity from the dropdown
+    const productContainer = button.closest('.product-container');
+    const selectedQuantity = Number(productContainer.querySelector('select').value);
+
+    const addedMessage = productContainer.querySelector(`.js-added-to-cart`);
+
+     //  Clear any existing timeout for this product
+     if (addedMessageTimeouts.has(productId)) {
+      clearTimeout(addedMessageTimeouts.get(productId));
+    }
+
+    // Show and restart the timer
+      addedMessage.classList.add('added-visible');
+    const timeoutId = setTimeout(() => {
+       addedMessage.classList.remove('added-visible');
+       addedMessageTimeouts.delete(productId); // Optional: cleanup
+    }, 2000);
+
+addedMessageTimeouts.set(productId, timeoutId); // ✅ Store the new timeout
 
 
-      let matchingItem;
 
-      cart.forEach((item)=>{
-        if(productId === item.productId) {
-          matchingItem = item;
-        }
-      });
+    let matchingItem;
 
-      if (matchingItem) {
-        matchingItem.quantity += selectedQuantity;
-      } else {
-        cart.push({
-          productId: productId,
-          quantity: selectedQuantity
-        });
+    cart.forEach((item) => {
+      if (productId === item.productId) {
+        matchingItem = item;
       }
 
-      let cartQuantity = 0;
+      const productContainer = button.closest('.product-container');
+      const selectedQuantity = Number(productContainer.querySelector('select').value);
+    });
 
-      cart.forEach((item)=>{
-        cartQuantity += item.quantity;
+    if (matchingItem) {
+      matchingItem.quantity += selectedQuantity;
+    } else {
+      cart.push({
+        productId: productId,
+        quantity: selectedQuantity
       });
+    }
 
-      document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+    let cartQuantity = 0;
+
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+    });
+
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
   });
 });

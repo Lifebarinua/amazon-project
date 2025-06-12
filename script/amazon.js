@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js';
+import {cart, addToCart} from '../data/cart.js';
 import {products} from '../data/products.js';
 let productsHTML = '';
 
@@ -56,22 +56,32 @@ products.forEach((product) => {
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-
 // Add a map to store timeout references for each product
 const addedMessageTimeouts = new Map();
 
+  function updateCartQuantity() {
+    let cartQuantity = 0;
 
+    cart.forEach((cartItem) => {
+      cartQuantity += cartItem.quantity;
+    });
 
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+  }
 
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
+    
 
     //Get the selected quantity from the dropdown
     const productContainer = button.closest('.product-container');
     const selectedQuantity = Number(productContainer.querySelector('select').value);
 
     const addedMessage = productContainer.querySelector(`.js-added-to-cart`);
+
+    addToCart(productId, selectedQuantity);
+    updateCartQuantity();
 
      //  Clear any existing timeout for this product
      if (addedMessageTimeouts.has(productId)) {
@@ -85,36 +95,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
        addedMessageTimeouts.delete(productId); // Optional: cleanup
     }, 2000);
 
-addedMessageTimeouts.set(productId, timeoutId); // ✅ Store the new timeout
+    addedMessageTimeouts.set(productId, timeoutId); 
 
-
-
-    let matchingItem;
-
-    cart.forEach((item) => {
-      if (productId === item.productId) {
-        matchingItem = item;
-      }
-
-      const productContainer = button.closest('.product-container');
-      const selectedQuantity = Number(productContainer.querySelector('select').value);
-    });
-
-    if (matchingItem) {
-      matchingItem.quantity += selectedQuantity;
-    } else {
-      cart.push({
-        productId: productId,
-        quantity: selectedQuantity
-      });
-    }
-
-    let cartQuantity = 0;
-
-    cart.forEach((item) => {
-      cartQuantity += item.quantity;
-    });
-
-    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
   });
 });

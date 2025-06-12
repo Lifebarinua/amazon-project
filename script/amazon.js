@@ -58,6 +58,12 @@ let productsHTML = '';
     button.addEventListener('click', ()=>{
     const productId = button.dataset.productId;
 
+ //Get the selected quantity from the dropdown
+  const productContainer = button.closest('.product-container');
+    
+  const selectedQuantity = Number(productContainer.querySelector('select').value);
+
+
       let matchingItem;
 
       cart.forEach((item)=>{
@@ -67,11 +73,11 @@ let productsHTML = '';
       });
 
       if (matchingItem) {
-        matchingItem.quantity += 1;
+        matchingItem.quantity += selectedQuantity;
       } else {
         cart.push({
           productId: productId,
-          quantity: 1
+          quantity: selectedQuantity
         });
       }
 
@@ -83,3 +89,4 @@ let productsHTML = '';
 
       document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
   });
+});

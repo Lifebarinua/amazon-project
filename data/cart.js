@@ -36,3 +36,12 @@ export function removeFromCart(productId) {
   cart = cart.filter(item => item.productId !== productId);
   saveToStorage();
 }
+
+//  NEW FUNCTION
+export function calculateCartQuantity() {
+  let totalQuantity = 0;
+  for (const item of cart) {
+    totalQuantity += item.quantity;
+  }
+  return totalQuantity;
+}

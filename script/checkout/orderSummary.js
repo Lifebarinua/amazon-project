@@ -1,5 +1,5 @@
 import {cart, removeFromCart, calculateCartQuantity, updateDeliveryOption} from '../../data/cart.js';
-import {products} from '../../data/products.js';
+import {products, getProduct} from '../../data/products.js';
 import {formatCurrency} from '../utils/money.js';
 import {hello} from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'
@@ -27,13 +27,9 @@ console.log(deliveryDate.format('dddd, MMMM D'));
       const productId = cartItem.productId;
 
 
-      let matchingProduct;
+      const matchingProduct = getProduct(productId);
 
-      products.forEach((product)=>{
-        if (product.id === productId) {
-          matchingProduct = product;
-        }
-      });
+     
 
       const deliveryOptionId = cartItem.deliveryOptionId;
 

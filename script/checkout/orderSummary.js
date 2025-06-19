@@ -26,7 +26,14 @@ console.log(deliveryDate.format('dddd, MMMM D'));
     cart.forEach((cartItem) => {
       const productId = cartItem.productId;
 
-      const matchingProduct = products.find(product => product.id === productId);
+
+      let matchingProduct;
+
+      products.forEach((product)=>{
+        if (product.id === productId) {
+          matchingProduct = product;
+        }
+      });
 
       const deliveryOptionId = cartItem.deliveryOptionId;
 

@@ -5,6 +5,9 @@ import { formatCurrency } from './utils/money.js';
 let productsHTML = '';
 
 products.forEach((product) => {
+  const cartItem = cart.find(item => item.productId === product.id);
+  const selectedQuantity = cartItem ? cartItem.quantity : 1;
+
   productsHTML += `<div class="product-container">
       <div class="product-image-container">
         <img class="product-image" src="${product.image}">
@@ -29,7 +32,7 @@ products.forEach((product) => {
       <div class="product-quantity-container">
         <select>
           ${Array.from({ length: 10 }, (_, i) =>
-            `<option value="${i + 1}"${i === 0 ? ' selected' : ''}>${i + 1}</option>`
+            `<option value="${i + 1}"${i + 1 === selectedQuantity ? ' selected' : ''}>${i + 1}</option>`
           ).join('')}
         </select>
       </div>

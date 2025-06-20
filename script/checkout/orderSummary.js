@@ -182,6 +182,7 @@ console.log(deliveryDate.format('dddd, MMMM D'));
         const { productId, deliveryOptionId} = element.dataset;
         updateDeliveryOption(productId, deliveryOptionId);
         renderOrderSummary();
+        renderPaymentSummary();
       });
     });
   }

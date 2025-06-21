@@ -111,19 +111,16 @@ export function renderOrderSummary() {
 
   document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
 
-  // DELETE BUTTON FUNCTIONALITY
-  document.querySelectorAll('.js-delete-link').forEach((link) => {
-    link.addEventListener('click', () => {
-      const productId = link.dataset.productId;
-      removeFromCart(productId);
+ // DELETE BUTTON FUNCTIONALITY
+document.querySelectorAll('.js-delete-link').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
 
-      const container = document.querySelector(`.js-cart-item-container-${productId}`);
-      if (container) container.remove();
-
-      updateCartQuantity();
-      renderPaymentSummary();
-    });
+    removeFromCart(productId);       // Remove from memory and localStorage
+    renderOrderSummary();            // Re-render to remove from DOM
+    renderPaymentSummary();          // Recalculate totals
   });
+});
 
   // DELIVERY OPTION SELECTION
   document.querySelectorAll('.js-delivery-option').forEach((element) => {

@@ -9,9 +9,9 @@ import { renderCheckoutHeader } from './checkoutHeader.js';
 
 
 hello();
-const today = dayjs();
-const deliveryDate = today.add(7, 'days');
-console.log(deliveryDate.format('dddd, MMMM D'));
+
+const dateString = calculateDeliveryDate(deliveryOptions);
+
 
 export function renderOrderSummary() {
   function updateCartQuantity() {

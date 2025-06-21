@@ -145,8 +145,11 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
       if (cartItem) {
         cartItem.quantity = newQuantity;
         localStorage.setItem('cart', JSON.stringify(cart));
+
+
         renderOrderSummary();       // re-render the cart items
         renderPaymentSummary();     // re-render the payment summary
+        renderCheckoutHeader(); // include if your header shows cart quantity
       }
     });
   });

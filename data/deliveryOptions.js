@@ -34,8 +34,24 @@ export function getDeliveryOption(deliveryOptionId){
  * @param {Object} deliveryOption - An object with a deliveryDays property.
  * @returns {string} - A string like "Saturday, June 22"
  */
+
+
+
+export function isWeekend(date) {
+  const day = date.format('dddd');
+  return day === 'Saturday' || day === 'Sunday';
+}
+
 export function calculateDeliveryDate(deliveryOption) {
-  const today = dayjs();
-  const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
-  return deliveryDate.format('dddd, MMMM D');
+  let date = dayjs();
+  let daysToAdd = deliveryOption.deliveryDays;
+
+  while (daysToAdd > 0) {
+    date = date.add(1, 'day');
+    if (!isWeekend(date)) {
+      daysToAdd--;
+    }
+  }
+
+  return date;
 }

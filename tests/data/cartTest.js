@@ -1,4 +1,4 @@
-import { addToCart, cart, loadFromStorage } from "../../data/cart.js";
+import { addToCart, removeFromCart, cart, loadFromStorage } from "../../data/cart.js";
 
 describe('test suite: addToCart', () => {
   beforeEach(() => {
@@ -46,5 +46,75 @@ describe('test suite: addToCart', () => {
     expect(cart.length).toEqual(1);
     expect(cart[0].quantity).toEqual(1);
     expect(localStorage.setItem).toHaveBeenCalledWith('cart', JSON.stringify(expectedCart));
+  });
+});
+// ============================
+// removeFromCart test suite
+// ============================
+describe('test suite: removeFromCart', () => {
+  beforeEach(() => {
+    // Mock localStorage
+    spyOn(localStorage, 'setItem');
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+      return JSON.stringify([
+        {
+          productId: 'abc123',
+          quantity: 1,
+          deliveryOptionId: '1'
+        },
+        {
+          productId: 'xyz789',
+          quantity: 3,
+          deliveryOptionId: '2'
+        }
+      ]);
+    });
+
+    loadFromStorage();
+  });
+
+  it('removes a productId that is in the cart', () => {
+    removeFromCart('abc123');
+
+    const expectedCart = [
+      {
+        productId: 'xyz789',
+        quantity: 3,
+        deliveryOptionId: '2'
+      }
+    ];
+
+    expect(cart.length).toEqual(1);
+    expect(cart[0].productId).toEqual('xyz789');
+    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'cart',
+      JSON.stringify(expectedCart)
+    );
+  });
+
+  it('does nothing if the productId is not in the cart', () => {
+    removeFromCart('not-found-id');
+
+    const expectedCart = [
+      {
+        productId: 'abc123',
+        quantity: 1,
+        deliveryOptionId: '1'
+      },
+      {
+        productId: 'xyz789',
+        quantity: 3,
+        deliveryOptionId: '2'
+      }
+    ];
+
+    expect(cart.length).toEqual(2);
+    expect(cart).toEqual(jasmine.arrayContaining(expectedCart));
+    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'cart',
+      JSON.stringify(expectedCart)
+    );
   });
 });

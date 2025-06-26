@@ -88,4 +88,30 @@ describe('test suite: renderOrderSummary', () => {
     expect(cart.length).toEqual(1);
     expect(cart[0].productId).toEqual(productId2);
   });
+
+  it('updates delivery option and updates payment summary', () => {
+    renderOrderSummary(); // Initial render
+  
+    // Simulate clicking the delivery option with ID '3' for productId1
+    const deliveryOptionElement = document.querySelector(
+      `.js-delivery-option[data-product-id="${productId1}"][data-delivery-option-id="3"]`
+    );
+  
+    deliveryOptionElement.click(); // triggers updateDeliveryOption(), rerenders everything
+  
+    // ✅ Check cart length
+    expect(cart.length).toEqual(2);
+  
+    // ✅ Check the first product's productId and deliveryOptionId
+    expect(cart[0].productId).toEqual(productId1);
+    expect(cart[0].deliveryOptionId).toEqual('3');
+  
+    // ✅ Check payment summary prices
+    const shippingElement = document.querySelector('.js-shipping-price');
+    const totalElement = document.querySelector('.js-total-price');
+  
+    expect(shippingElement.innerText).toEqual('$14.97');
+    expect(totalElement.innerText).toEqual('$63.49');
+  });
+  
 });

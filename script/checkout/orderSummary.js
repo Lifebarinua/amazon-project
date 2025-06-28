@@ -23,6 +23,7 @@ export function renderOrderSummary() {
   }
 
   updateCartQuantity();
+  renderPaymentSummary();
 
   let cartSummaryHTML = '';
 
@@ -82,35 +83,40 @@ js-cart-item-container-${matchingProduct.id}">
 });
 
 function deliveryOptionsHTML(matchingProduct, cartItem) {
-let html = '';
+  let html = '';
 
-deliveryOptions.forEach((deliveryOption) => {
+  deliveryOptions.forEach((deliveryOption) => {
+    const dateString = calculateDeliveryDate(deliveryOption);
+    const priceString = deliveryOption.priceCents === 0
+      ? 'FREE'
+      : `$${formatCurrency(deliveryOption.priceCents)}`;
+    const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
 
-const dateString = calculateDeliveryDate(deliveryOption);
+    html += `
+      <div class="delivery-option js-delivery-option js-delivery-option-${matchingProduct.id}-${deliveryOption.id}"
+        data-product-id="${matchingProduct.id}"
+        data-delivery-option-id="${deliveryOption.id}">
+        <input type="radio" 
+          ${isChecked ? 'checked' : ''}
+          class="delivery-option-input js-delivery-input-${matchingProduct.id}-${deliveryOption.id}"
+          name="delivery-option-${matchingProduct.id}">
+        <div> 
+          <div class="delivery-option-name">
+            ${deliveryOption.name}
+          </div>
+          <div class="delivery-option-date">
+            ${dateString}
+          </div>
+          <div class="delivery-option-price">
+            ${priceString} - Shipping
+          </div>
+        </div>
+      </div>
+    `;
+  });
 
-const priceString = deliveryOption.priceCents === 0
-  ? 'FREE'
-  : `$${formatCurrency(deliveryOption.priceCents)}`;
-
-const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-
-html += `
-  <div class="delivery-option js-delivery-option"
-    data-product-id="${matchingProduct.id}"
-    data-delivery-option-id="${deliveryOption.id}">
-    <input type="radio" 
-      ${isChecked ? 'checked' : ''}
-      class="delivery-option-input" name="delivery-option-${matchingProduct.id}">
-    <div> 
-      <div class="delivery-option-date">${dateString}</div>
-      <div class="delivery-option-price">${priceString} - Shipping</div>
-    </div>
-  </div>
-`;
-    });
-
-    return html;
-  }
+  return html;
+}
 
   document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
 

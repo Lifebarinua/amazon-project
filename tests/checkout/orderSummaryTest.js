@@ -44,9 +44,9 @@ describe('test suite: renderOrderSummary', () => {
 
   it('displays the cart', () => {
     renderOrderSummary();
-  
+
     expect(document.querySelectorAll('.js-cart-item-container').length).toEqual(2);
-  
+
     // ✅ Check quantity values
     expect(
       document.querySelector(`.js-checkout-quantity-select[data-product-id="${productId1}"]`).value
@@ -54,12 +54,12 @@ describe('test suite: renderOrderSummary', () => {
     expect(
       document.querySelector(`.js-checkout-quantity-select[data-product-id="${productId2}"]`).value
     ).toEqual('1');
-  
+
     // ✅ Check product names
     expect(
       document.querySelector(`.js-product-name-${productId1}`).innerText
     ).toContain('Black and Gray Athletic Cotton Socks - 6 Pairs');
-  
+
     expect(
       document.querySelector(`.js-product-name-${productId2}`).innerText
     ).toContain('Intermediate Size Basketball');
@@ -68,14 +68,14 @@ describe('test suite: renderOrderSummary', () => {
     const expectedPrice1 = `$${formatCurrency(getProduct(productId1).priceCents)}`;
     const expectedPrice2 = `$${formatCurrency(getProduct(productId2).priceCents)}`;
 
-  expect(
-    document.querySelector(`.js-product-price-${productId1}`).innerText
-  ).toEqual(expectedPrice1);
-  expect(
-    document.querySelector(`.js-product-price-${productId2}`).innerText
-  ).toEqual(expectedPrice2);
+    expect(
+      document.querySelector(`.js-product-price-${productId1}`).innerText
+    ).toEqual(expectedPrice1);
+    expect(
+      document.querySelector(`.js-product-price-${productId2}`).innerText
+    ).toEqual(expectedPrice2);
   });
-  
+
 
   it('removes a product', () => {
     renderOrderSummary();
@@ -87,31 +87,74 @@ describe('test suite: renderOrderSummary', () => {
     expect(document.querySelector(`.js-cart-item-container-${productId2}`)).not.toEqual(null);
     expect(cart.length).toEqual(1);
     expect(cart[0].productId).toEqual(productId2);
+    
+    expect(document.querySelector(`.js-product-name-${productId1}`)).toBeNull();
+
+    
+    expect(
+      document.querySelector(`.js-product-name-${productId2}`).innerText
+    ).toContain('Intermediate Size Basketball');    
   });
 
   it('updates delivery option and updates payment summary', () => {
     renderOrderSummary(); // Initial render
-  
+
     // Simulate clicking the delivery option with ID '3' for productId1
     const deliveryOptionElement = document.querySelector(
       `.js-delivery-option[data-product-id="${productId1}"][data-delivery-option-id="3"]`
     );
-  
+
     deliveryOptionElement.click(); // triggers updateDeliveryOption(), rerenders everything
-  
+
     // ✅ Check cart length
     expect(cart.length).toEqual(2);
-  
+
     // ✅ Check the first product's productId and deliveryOptionId
     expect(cart[0].productId).toEqual(productId1);
     expect(cart[0].deliveryOptionId).toEqual('3');
-  
+
     // ✅ Check payment summary prices
     const shippingElement = document.querySelector('.js-shipping-price');
     const totalElement = document.querySelector('.js-total-price');
-  
+
     expect(shippingElement.innerText).toEqual('$14.97');
     expect(totalElement.innerText).toEqual('$63.49');
   });
-  
+
+  // ✅ NEW TEST
+  it('updates delivery option by clicking the third delivery option and updates payment summary correctly', () => {
+    renderOrderSummary();
+
+    // Get the 3rd delivery option for the 1st product
+    const deliveryOptionElement = document.querySelector(
+      `.js-delivery-option-${productId1}-3`
+    );
+    expect(deliveryOptionElement).not.toBeNull();
+
+    // Simulate clicking it
+    deliveryOptionElement.click();
+
+    // After clicking, get the <input> inside this delivery option
+    const inputElement = document.querySelector(
+      `.js-delivery-input-${productId1}-3`
+    );
+    expect(inputElement).not.toBeNull();
+
+    // Test that the input is now checked
+    expect(inputElement.checked).toBeTrue();
+
+    // Check cart length
+    expect(cart.length).toEqual(2);
+
+    // Check first product's productId and deliveryOptionId
+    expect(cart[0].productId).toEqual(productId1);
+    expect(cart[0].deliveryOptionId).toEqual('3');
+
+    // Check payment summary prices
+    const shippingElement = document.querySelector('.js-shipping-price');
+    const totalElement = document.querySelector('.js-total-price');
+
+    expect(shippingElement.innerText).toEqual('$14.97');
+    expect(totalElement.innerText).toEqual('$63.49');
+  });
 });

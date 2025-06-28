@@ -4,14 +4,17 @@ import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 export const deliveryOptions = [{
 id: '1',
+name: 'Standard Delivery',
 deliveryDays: 7,
 priceCents: 0
 },{
   id: '2',
+  name: 'Express Delivery',
   deliveryDays: 3,
   priceCents: 499
 },{
   id: '3',
+  name: 'Next Day Delivery',
   deliveryDays: 1,
   priceCents: 998
 }];

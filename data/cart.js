@@ -1,3 +1,6 @@
+import { deliveryOptions } from './deliveryOptions.js';
+
+
 export let cart;
 
 
@@ -58,9 +61,19 @@ export function calculateCartQuantity() {
 export function updateDeliveryOption(productId, deliveryOptionId) {
   let matchingItem = cart.find(item => item.productId === productId);
 
-  if (matchingItem) {
-    matchingItem.deliveryOptionId = deliveryOptionId;
-    saveToStorage();
+  if (!matchingItem) {
+    return; // productId not found
   }
+
+  const deliveryExists = deliveryOptions.some(
+    option => option.id === deliveryOptionId
+  );
+
+  if (!deliveryExists) {
+    return; // deliveryOptionId not found
+  }
+
+  matchingItem.deliveryOptionId = deliveryOptionId;
+  saveToStorage();
 }
 

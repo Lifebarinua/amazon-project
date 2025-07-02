@@ -50,7 +50,7 @@ js-cart-item-container-${matchingProduct.id}">
         ${matchingProduct.name}
       </div>
       <div class="product-price js-product-price-${matchingProduct.id}">
-        $${formatCurrency(matchingProduct.priceCents)}
+        ${matchingProduct.getPrice()}
       </div>
       <div class="product-quantity
       js-product-quantity-${matchingProduct.id}">

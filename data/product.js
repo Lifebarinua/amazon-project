@@ -1,4 +1,4 @@
-import { formatCurrency } from "../script/utils/money";
+import { formatCurrency } from "../script/utils/money.js";
 
 export class Product {
   constructor(productDetails) {

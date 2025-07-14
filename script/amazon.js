@@ -1,14 +1,16 @@
-import { cart, addToCart, calculateCartQuantity } from '../data/cart.js';
+import { cart } from '../data/cart-class.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 
 let productsHTML = '';
 
 products.forEach((product) => {
-  const cartItem = cart.find(item => item.productId === product.id);
+  // Look up the cart item for this product (if it exists)
+  const cartItem = cart.cartItems.find(item => item.productId === product.id);
   const selectedQuantity = cartItem ? cartItem.quantity : 1;
 
-  productsHTML += `<div class="product-container">
+  productsHTML += `
+    <div class="product-container">
       <div class="product-image-container">
         <img class="product-image" src="${product.image}">
       </div>
@@ -61,8 +63,7 @@ const addedMessageTimeouts = new Map();
 updateCartQuantity();
 
 function updateCartQuantity() {
-  const cartQuantity = calculateCartQuantity();
-
+  const cartQuantity = cart.calculateCartQuantity();
   const cartQuantityElement = document.querySelector('.js-cart-quantity');
   if (cartQuantityElement) {
     cartQuantityElement.textContent = cartQuantity;
@@ -72,13 +73,14 @@ function updateCartQuantity() {
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
-
     const productContainer = button.closest('.product-container');
     const selectedQuantity = Number(productContainer.querySelector('select').value);
 
     const addedMessage = productContainer.querySelector('.js-added-to-cart');
 
-    addToCart(productId, selectedQuantity);
+    // Use cart.addToCart with selected quantity
+    cart.addToCart(productId, selectedQuantity);
+
     updateCartQuantity();
 
     if (addedMessageTimeouts.has(productId)) {

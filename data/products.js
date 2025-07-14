@@ -1,7 +1,7 @@
 import { Product, Clothing, Appliance } from './product.js';
 
 // All products in ONE array (add all your products here)
-const rawProducts = [
+export const rawProducts = [
   {
     id: "54e0eccd-8f36-462b-b68a-8182611d9add",
     image: "images/products/black-2-slot-toaster.jpg",

@@ -1,6 +1,35 @@
 import { Product, Clothing, Appliance } from './product.js';
 
-// All products in ONE array (add all your products here)
+
+export let products = [];
+
+export function loadProducts(fun) {
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', ()=>{
+    products = JSON.parse(xhr.response).map((productDetails) => {
+      if (productDetails.type === 'clothing') {
+        return new Clothing(productDetails);
+      }
+      if (productDetails.type === 'appliance') {
+        return new Appliance(productDetails);
+      }
+      return new Product(productDetails);
+    });
+
+    console.log('load products');
+
+    fun();
+  });
+
+  xhr.open('GET', 'https://supersimplebackend.dev/products');
+  xhr.send();
+}
+export function getProduct(productId) {
+  return products.find(product => product.id === productId);
+}
+
+
+/*
 export const rawProducts = [
   {
     id: "54e0eccd-8f36-462b-b68a-8182611d9add",
@@ -757,77 +786,4 @@ export const products = rawProducts.map((productDetails) => {
   return new Product(productDetails);
 });
 
-export function getProduct(productId) {
-  return products.find(product => product.id === productId);
-}
-
-
-
-
-
-
-
-
-
-
-
-  // getStarsUrl() {
-  //  return `images/ratings/rating-${this.rating.stars * 10}.png`;
-  // }
-
-  // getPrice() {
-  //   return `$${formatCurrency(this.priceCents)}`;
-  // }
-
-  // extraInfoHTML(){
-  //   return '';
-  // }
-
-
-  // class Clothing extends Product {
-  //   sizeChartLink;
-
-  //   constructor(productDetails) {
-  //     super(productDetails);
-  //     this.sizeChartLink = productDetails.sizeChartLink;
-  //   }
-
-  //   extraInfoHTML() {
-  //     // super.extraInfoHTML();
-  //     return `
-  //     <a href="${this.sizeChartLink}" target="_blank">
-  //       Size chart
-  //     </a>
-  //     `;
-  //   }    
-  // }
-/*
-  const date = new Date();
-  console.log(date);
-  console.log(date.toLocaleTimeString());
-  */
- /*
-  console.log(this);
-
-  const object2 = {
-    a: 2,
-    b: this.a
-  }
 */
-/*
-function logThis() {
-  console.log(this);
-}
-logThis();
-logThis.call('hello');
-
-this
-const object3 = {
-  method: () => {
-    console.log(this);
-  }
-};
-object3.method();
-*/
-
-

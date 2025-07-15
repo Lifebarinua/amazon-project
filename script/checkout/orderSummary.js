@@ -49,6 +49,10 @@ export function renderOrderSummary() {
   cart.cartItems.forEach((cartItem) => {
     const productId = cartItem.productId;
     const matchingProduct = getProduct(productId);
+    if (!matchingProduct) {
+      console.warn('Product not found for cart item:', productId);
+      return; // skip this cartItem and continue to the next
+    }
     const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
     const deliveryDate = dayjs().add(deliveryOption.deliveryDays, 'days');
     const dateString = deliveryDate.format('dddd, MMMM D');

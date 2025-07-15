@@ -14,7 +14,7 @@ priceCents: 0
   priceCents: 499
 },{
   id: '3',
-  name: 'Next Day Delivery',
+  name: 'Royal Order Delivery',
   deliveryDays: 1,
   priceCents: 998
 }];

@@ -45,7 +45,7 @@ export class Car {
 
   displayInfo() {
     const trunkStatus = this.isTrunkOpen ? 'open' : 'closed';
-    console.log(`${this.brand} ${this.model}, speed: ${this.speed} km/h, trunk: ${trunkStatus}`);
+    // console.log(`${this.brand} ${this.model}, speed: ${this.speed} km/h, trunk: ${trunkStatus}`);
   }
 }
 
@@ -70,6 +70,6 @@ export class RaceCar extends Car {
   }
 
   displayInfo() {
-    console.log(`${this.brand} ${this.model}, speed: ${this.speed} km/h (Race Car)`);
+    // console.log(`${this.brand} ${this.model}, speed: ${this.speed} km/h (Race Car)`);
   }
 }

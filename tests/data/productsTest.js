@@ -1,4 +1,4 @@
-import { Product, Clothing, Appliance } from './product.js';
+import { Product, Clothing, Appliance } from '../../data/product.js';
 
 describe('Product class', () => {
   it('creates a Product instance with correct properties', () => {

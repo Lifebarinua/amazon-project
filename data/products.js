@@ -16,7 +16,7 @@ export function loadProducts(fun) {
       return new Product(productDetails);
     });
 
-    // console.log('load products');
+    console.log('load products');
 
     fun();
   });
@@ -24,6 +24,8 @@ export function loadProducts(fun) {
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
 }
+
+
 export function getProduct(productId) {
   return products.find(product => product.id === productId);
 }

@@ -18,7 +18,7 @@ const value = await new Promise((resolve, reject)=>{
   // throw 'error2'
   loadCart(()=>{
     // reject('error3');
-    resolve(value);
+    resolve();
   });
  });
 

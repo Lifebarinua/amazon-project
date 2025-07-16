@@ -2,16 +2,12 @@ import { renderOrderSummary } from './checkout/orderSummary.js';
 import { renderPaymentSummary } from './checkout/paymentSummary.js';
 import { renderCheckoutHeader } from './checkout/checkoutHeader.js';
 import { Car, RaceCar } from '../data/car.js';
-import { loadProducts } from '../data/products.js';
+import { loadProducts, loadProductsFetch } from '../data/products.js';
 import { loadCart } from '../data/cart.js';
 // import '../data/backend-practice.js';
 
 Promise.all([
-  new Promise((resolve)=> {
-    loadProducts((response)=>{
-      resolve(response);
-    });
-  }),
+ loadProductsFetch(),
   new Promise((resolve)=>{
     loadCart(()=>{
       resolve();

@@ -94,3 +94,23 @@ export function loadCart(callback) {
   }
 }
 
+export async function loadCartFetch() {
+  try {
+    const response = await fetch('https://supersimplebackend.dev/cart');
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const text = await response.text();
+    console.log('Cart response (text):', text);
+    
+    // Optional: parse it if needed
+    // const cartData = JSON.parse(text);
+    // console.log(cartData);
+
+  } catch (error) {
+    console.error('Fetch error:', error.message);
+  }
+}
+

@@ -1,91 +1,56 @@
 import { renderOrderSummary } from './checkout/orderSummary.js';
 import { renderPaymentSummary } from './checkout/paymentSummary.js';
 import { renderCheckoutHeader } from './checkout/checkoutHeader.js';
-import { Car, RaceCar } from '../data/car.js';
-import { loadProducts, loadProductsFetch } from '../data/products.js';
-import { loadCart } from '../data/cart.js';
-// import '../data/backend-practice.js';
-
+import { loadProductsFetch, getProduct } from '../data/products.js';
+import { loadCartFetch } from '../data/cart.js';
+import { cart } from '../data/cart-class.js';
+import { addOrder } from '../data/orders.js';
+import { getDeliveryOption } from '../data/deliveryOptions.js';
 
 async function loadPage() {
+  try {
+    await Promise.all([
+      loadProductsFetch(),
+      loadCartFetch()
+    ]);
 
-try {
-  // throw 'erroe1';
-
-  await loadProductsFetch();
-
-const value = await new Promise((resolve, reject)=>{
-  // throw 'error2'
-  loadCart(()=>{
-    // reject('error3');
-    resolve();
-  });
- });
-
-} catch (error) {
-  console.log('unexpected error, Please try again later');
+    renderCheckoutHeader();
+    renderOrderSummary();
+    renderPaymentSummary();
+  } catch (error) {
+    console.log('Unexpected error, please try again later.');
+  }
 }
 
-  renderCheckoutHeader();
-  renderOrderSummary();
-  renderPaymentSummary();
-}
 loadPage();
 
-/*
+// Handle place order
+function placeOrder() {
+  const now = new Date().toISOString();
 
-Promise.all([
- loadProductsFetch(),
-  new Promise((resolve)=>{
-    loadCart(()=>{
-      resolve();
-    });
-   })
+  cart.cartItems.forEach(cartItem => {
+    const product = getProduct(cartItem.productId);
+    const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
+    const deliveryDate = deliveryOption.estimatedDeliveryDate;
 
-]).then((response)=>{
-  renderCheckoutHeader();
-  renderOrderSummary();
-  renderPaymentSummary();
-});
-*/
-/*
-new Promise((resolve)=> {
-  loadProducts((response)=>{
-    resolve(response);
+    const order = {
+      orderId: crypto.randomUUID(),
+      productId: product.id,
+      productName: product.name,
+      productImage: product.image,
+      quantity: cartItem.quantity,
+      priceCents: product.priceCents,
+      deliveryAddress: '123 Main St', // update with real input later
+      orderPlacedDate: now,
+      deliveryDate: deliveryDate
+    };
+
+    addOrder(order);
   });
 
-}).then(()=>{
-   return new Promise((resolve)=>{
-    loadCart(()=>{
-      resolve();
-    });
-   });
+  cart.clearCart();
+  window.location.href = 'orders.html';
+}
 
-}).then(()=>{
-  renderCheckoutHeader();
-  renderOrderSummary();
-  renderPaymentSummary();
-});
-*/
-/*
-loadProducts(()=>{
- 
-  renderCheckoutHeader();
-  renderOrderSummary();
-  renderPaymentSummary();
-});
-*/
-
-const car1 = new Car('Toyota', 'Corolla');
-const raceCar = new RaceCar('McLaren', 'F1', 20);
-
-
-// Display info
-car1.displayInfo();
-raceCar.displayInfo();
-
-// Try driving
-raceCar.go();
-raceCar.go();
-raceCar.displayInfo();
-
+document.querySelector('.js-place-order-button')
+  .addEventListener('click', placeOrder);

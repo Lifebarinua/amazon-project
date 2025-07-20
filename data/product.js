@@ -1,24 +1,32 @@
 import { formatCurrency } from "../script/utils/money.js";
 
 export class Product {
-  constructor(productDetails) {
-    this.id = productDetails.id;
-    this.image = productDetails.image;
-    this.name = productDetails.name;
-    this.rating = productDetails.rating;
-    this.priceCents = productDetails.priceCents;
-    this.keywords = productDetails.keywords;
+  constructor({
+    id,
+    image,
+    name,
+    rating,
+    priceCents,
+    keywords = [],
+  }) {
+    this.id = id;
+    this.image = image;
+    this.name = name;
+    this.rating = rating;
+    this.priceCents = priceCents;
+    this.keywords = keywords;
   }
 
   getStarsUrl() {
-    return `images/ratings/rating-${this.rating.stars * 10}.png`;
+    const roundedRating = Math.round(this.rating.stars * 2) / 2;
+    return `images/ratings/rating-${roundedRating.toFixed(1).replace('.', '-')}.png`;
   }
 
   getPrice() {
     return `$${formatCurrency(this.priceCents)}`;
   }
 
-  extraInfoHTML(){
+  extraInfoHTML() {
     return '';
   }
 }

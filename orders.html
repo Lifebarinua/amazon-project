@@ -53,8 +53,7 @@
 
     <div class="main">
       <div class="page-title">Your Orders</div>
-
-      <div class="orders-grid">
+      <div class="js-orders-container orders-grid">
         <div class="order-container">
           
           <div class="order-header">
@@ -169,7 +168,7 @@
               <div class="product-quantity">
                 Quantity: 2
               </div>
-              <button class="buy-again-button button-primary">
+              <button class="buy-again-button  js-buy-again-button button-primary">
                 <img class="buy-again-icon" src="images/icons/buy-again.png">
                 <span class="buy-again-message">Buy it again</span>
               </button>
@@ -177,7 +176,7 @@
 
             <div class="product-actions">
               <a href="tracking.html">
-                <button class="track-package-button button-secondary">
+                <button class="track-package-button js-track-package-button button-secondary">
                   Track package
                 </button>
               </a>
@@ -186,5 +185,6 @@
         </div>
       </div>
     </div>
+    <script type="module" src="script/orders.js"></script>
   </body>
 </html>

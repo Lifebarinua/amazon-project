@@ -4,99 +4,106 @@ import { formatCurrency } from './utils/money.js';
 
 loadProducts(renderProductsGrid);
 
-function renderProductsGrid(){
-    let productsHTML = '';
+function renderProductsGrid() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchTerm = urlParams.get('search')?.toLowerCase();
 
-    products.forEach((product) => {
-      // Look up the cart item for this product (if it exists)
-      const cartItem = cart.cartItems.find(item => item.productId === product.id);
-      const selectedQuantity = cartItem ? cartItem.quantity : 1;
+  let filteredProducts = products;
+  if (searchTerm) {
+    filteredProducts = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm)
+    );
+  }
 
-      productsHTML += `
-        <div class="product-container">
-          <div class="product-image-container">
-            <img class="product-image" src="${product.image}">
+  let productsHTML = '';
+
+  filteredProducts.forEach((product) => {
+    const cartItem = cart.cartItems.find(item => item.productId === product.id);
+    const selectedQuantity = cartItem ? cartItem.quantity : 1;
+
+    productsHTML += `
+      <div class="product-container">
+        <div class="product-image-container">
+          <img class="product-image" src="${product.image}">
+        </div>
+
+        <div class="product-name limit-text-to-2-lines">
+          ${product.name}
+        </div>
+
+        <div class="product-rating-container">
+          <img class="product-rating-stars"
+            src="${product.getStarsUrl()}">
+          <div class="product-rating-count link-primary">
+            ${product.rating.count}
           </div>
+        </div>
 
-          <div class="product-name limit-text-to-2-lines">
-            ${product.name}
-          </div>
+        <div class="product-price">
+          ${product.getPrice()}
+        </div>
 
-          <div class="product-rating-container">
-            <img class="product-rating-stars"
-              src="${product.getStarsUrl()}">
-            <div class="product-rating-count link-primary">
-              ${product.rating.count}
-            </div>
-          </div>
+        <div class="product-quantity-container">
+          <select>
+            ${Array.from({ length: 10 }, (_, i) =>
+              `<option value="${i + 1}"${i + 1 === selectedQuantity ? ' selected' : ''}>${i + 1}</option>`
+            ).join('')}
+          </select>
+        </div>
 
-          <div class="product-price">
-            ${product.getPrice()}
-          </div>
+        ${product.extraInfoHTML()}
 
-          <div class="product-quantity-container">
-            <select>
-              ${Array.from({ length: 10 }, (_, i) =>
-                `<option value="${i + 1}"${i + 1 === selectedQuantity ? ' selected' : ''}>${i + 1}</option>`
-              ).join('')}
-            </select>
-          </div>
+        <div class="product-spacer"></div>
 
-          ${product.extraInfoHTML()}
+        <div class="added-to-cart js-added-to-cart">
+          <img src="images/icons/checkmark.png">
+          Added
+        </div>
 
-          <div class="product-spacer"></div>
+        <button class="add-to-cart-button button-primary js-add-to-cart"
+          data-product-id="${product.id}">
+          Add to Cart
+        </button>
+      </div>`;
+  });
 
-          <div class="added-to-cart js-added-to-cart">
-            <img src="images/icons/checkmark.png">
-            Added
-          </div>
+  document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-          <button class="add-to-cart-button button-primary js-add-to-cart"
-            data-product-id="${product.id}">
-            Add to Cart
-          </button>
-        </div>`;
-    });
+  const addedMessageTimeouts = new Map();
 
-    document.querySelector('.js-products-grid').innerHTML = productsHTML;
+  updateCartQuantity();
 
-    const addedMessageTimeouts = new Map();
-
-    // Call this on page load
-    updateCartQuantity();
-
-    function updateCartQuantity() {
-      const cartQuantity = cart.calculateCartQuantity();
-      const cartQuantityElement = document.querySelector('.js-cart-quantity');
-      if (cartQuantityElement) {
-        cartQuantityElement.textContent = cartQuantity;
-      }
+  function updateCartQuantity() {
+    const cartQuantity = cart.calculateCartQuantity();
+    const cartQuantityElement = document.querySelector('.js-cart-quantity');
+    if (cartQuantityElement) {
+      cartQuantityElement.textContent = cartQuantity;
     }
+  }
 
-    document.querySelectorAll('.js-add-to-cart').forEach((button) => {
-      button.addEventListener('click', () => {
-        const productId = button.dataset.productId;
-        const productContainer = button.closest('.product-container');
-        const selectedQuantity = Number(productContainer.querySelector('select').value);
+  document.querySelectorAll('.js-add-to-cart').forEach((button) => {
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+      const productContainer = button.closest('.product-container');
+      const selectedQuantity = Number(productContainer.querySelector('select').value);
 
-        const addedMessage = productContainer.querySelector('.js-added-to-cart');
+      const addedMessage = productContainer.querySelector('.js-added-to-cart');
 
-        // Use cart.addToCart with selected quantity
-        cart.addToCart(productId, selectedQuantity);
+      cart.addToCart(productId, selectedQuantity);
 
-        updateCartQuantity();
+      updateCartQuantity();
 
-        if (addedMessageTimeouts.has(productId)) {
-          clearTimeout(addedMessageTimeouts.get(productId));
-        }
+      if (addedMessageTimeouts.has(productId)) {
+        clearTimeout(addedMessageTimeouts.get(productId));
+      }
 
-        addedMessage.classList.add('added-visible');
-        const timeoutId = setTimeout(() => {
-          addedMessage.classList.remove('added-visible');
-          addedMessageTimeouts.delete(productId);
-        }, 2000);
+      addedMessage.classList.add('added-visible');
+      const timeoutId = setTimeout(() => {
+        addedMessage.classList.remove('added-visible');
+        addedMessageTimeouts.delete(productId);
+      }, 2000);
 
-        addedMessageTimeouts.set(productId, timeoutId);
-      });
+      addedMessageTimeouts.set(productId, timeoutId);
     });
+  });
 }

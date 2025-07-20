@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Lesson 18</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .output {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Lesson 18: Backend Practice</h1>
+
+  <button id="get-order">Get Order</button>
+
+  <div class="output" id="output"></div>
+
+  <h2>GET /greeting with XMLHttpRequest</h2>
+
+  <h2>GET /greeting with fetch()</h2>
+
+  <h2>GET /greeting with fetch() and async/await</h2>
+
+  <h2>POST /greeting with fetch() and async/await</h2>
+
+  <h2>POST /greeting without body</h2>
+
+  <script>
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'https://supersimplebackend.dev/greeting');
+
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log('Response:', xhr.responseText);
+      } else {
+        console.error('Request failed with status:', xhr.status);
+      }
+    };
+
+    xhr.onerror = function () {
+      console.error('Network error.');
+    };
+
+    xhr.send();
+
+
+
+    fetch('https://supersimplebackend.dev/greeting')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text(); // Use text() instead of json()
+      })
+      .then(data => {
+        console.log('Response:', data);
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
+
+
+
+    async function getGreeting() {
+      try {
+        const response = await fetch('https://supersimplebackend.dev/greeting');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const text = await response.text();
+        console.log('Response:', text);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    }
+
+    // Run the async function
+    getGreeting();
+
+
+    async function sendGreeting() {
+      try {
+        const response = await fetch('https://supersimplebackend.dev/greeting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: 'Life Barinua'
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const text = await response.text();
+        console.log('Response:', text);
+      } catch (error) {
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          console.error('CORS error. Your request was blocked by the backend.');
+        } else {
+          console.error('Fetch error:', error);
+        }
+      }
+    }
+
+    // Run the async function
+    sendGreeting();
+
+
+
+
+  /*  
+    async function postGreetingWithoutBody() {
+      try {
+        const response = await fetch('https://supersimplebackend.dev/greeting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          // No body is sent here
+        });
+
+        if (!response.ok) {
+          // Manually throw an error for non-2xx responses
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const text = await response.text();
+        console.log('Response:', text);
+      } catch (error) {
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          console.error('CORS error. Your request was blocked by the backend.');
+        } else {
+          console.error('Manual error:', error.message);
+        }
+      }
+    }
+
+    postGreetingWithoutBody();
+    
+
+
+
+    async function postGreetingWithoutBody() {
+      try {
+        const response = await fetch('https://supersimplebackend.dev/greeting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          // No body is sent
+        });
+
+        if (!response.ok) {
+          throw response; // Throw the actual response object
+        }
+
+        const text = await response.text();
+        console.log('Success:', text);
+
+      } catch (error) {
+        // If the error is a Response object, we can inspect it
+        if (error instanceof Response) {
+          const errorText = await error.text();
+          console.error(`HTTP error ${error.status}: ${errorText}`);
+        } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          console.error('CORS error. Your request was blocked by the backend.');
+        } else {
+          console.error('Unexpected error:', error);
+        }
+      }
+    }
+
+    postGreetingWithoutBody();
+
+*/
+
+
+    async function postGreetingWithoutBody() {
+      try {
+        const response = await fetch('https://supersimplebackend.dev/greeting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          // Intentionally leaving out the body to trigger 400 error
+        });
+
+        if (!response.ok) {
+          throw response; // Throw response so we can handle it manually
+        }
+
+        const text = await response.text();
+        console.log('Success:', text);
+
+      } catch (error) {
+        if (error instanceof Response) {
+          const errorText = await error.text();
+          console.error(`HTTP error ${error.status}: ${errorText}`);
+        } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          console.error('CORS error. Your request was blocked by the backend.');
+        } else {
+          console.error('Network error. Please try again.');
+        }
+      }
+    }
+
+    postGreetingWithoutBody();
+
+  </script>
+</body>
+
+</html>

@@ -19,8 +19,10 @@ export class Product {
 
   getStarsUrl() {
     const roundedRating = Math.round(this.rating.stars * 2) / 2;
-    return `images/ratings/rating-${roundedRating.toFixed(1).replace('.', '-')}.png`;
+    const ratingInt = Math.round(roundedRating * 10); // e.g., 4.5 → 45
+    return `images/ratings/rating-${ratingInt}.png`;
   }
+  
 
   getPrice() {
     return `$${formatCurrency(this.priceCents)}`;
